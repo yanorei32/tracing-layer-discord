@@ -302,7 +302,35 @@ impl DiscordLayer {
         };
         let source_file = event.metadata().file().unwrap_or("Unknown");
         let source_line = event.metadata().line().unwrap_or(0);
-        let discord_embed = serde_json::json!({
+
+        // Maximum characters allowed for a Discord field value
+        const MAX_FIELD_VALUE_CHARS: usize = 1024 - 15;
+        const MAX_ERROR_MESSAGE_CHARS: usize = 2048 - 15;
+
+        // Truncate error_message if it exceeds the limit
+        let mut truncated_message = String::new();
+        if message.chars().count() > MAX_ERROR_MESSAGE_CHARS {
+            println!(
+                "Truncating message to {} characters, original: {}",
+                MAX_ERROR_MESSAGE_CHARS,
+                message
+            );
+            let mut char_count = 0;
+            for c in message.chars() {
+                char_count += 1;
+                if char_count > MAX_ERROR_MESSAGE_CHARS {
+                    break;
+                }
+                truncated_message.push(c);
+            }
+        }
+        let message = if truncated_message.is_empty() {
+            message
+        } else {
+            truncated_message.as_str()
+        };
+
+        let mut discord_embed = serde_json::json!({
             "title": format!("{} - {} {}", app_name, event_level_emoji, event_level),
             "description": format!("```rust\n{}\n```", message),
             "fields": [
@@ -316,11 +344,6 @@ impl DiscordLayer {
                     "value": format!("*Source*\n`{}#L{}`", source_file, source_line),
                     "inline": true
                 },
-                {
-                    "name": "Metadata",
-                    "value": format!("```json\n{}\n```", metadata),
-                    "inline": false
-                }
             ],
             "footer": {
                 "text": app_name
@@ -330,6 +353,37 @@ impl DiscordLayer {
                 "url": "https://example.com/error-thumbnail.png"
             }
         });
+
+        // Check if metadata exceeds the limit
+        if metadata.len() <= MAX_FIELD_VALUE_CHARS {
+            // Metadata fits within a single field
+            discord_embed["fields"].as_array_mut().unwrap().push(serde_json::json!({
+                "name": "Metadata",
+                "value": format!("```json\n{}\n```", metadata),
+                "inline": false
+            }));
+        } else {
+            // Metadata exceeds the limit, split into multiple fields
+            let mut remaining_metadata = metadata;
+            let mut chunk_number = 1;
+            while !remaining_metadata.is_empty() {
+                let chunk = remaining_metadata
+                    .chars()
+                    .take(MAX_FIELD_VALUE_CHARS)
+                    .collect::<String>();
+
+                remaining_metadata = remaining_metadata.chars().skip(MAX_FIELD_VALUE_CHARS).collect();
+
+                discord_embed["fields"].as_array_mut().unwrap().push(serde_json::json!({
+                    "name": format!("Metadata ({})", chunk_number),
+                    "value": format!("```json\n{}\n```", chunk),
+                    "inline": false
+                }));
+
+                chunk_number += 1;
+            }
+        }
+
         PayloadMessageType::EmbedNoText(vec![discord_embed])
     }
 
