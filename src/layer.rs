@@ -335,13 +335,13 @@ impl DiscordLayer {
             "description": format!("```rust\n{}\n```", message),
             "fields": [
                 {
-                    "name": "Target",
-                    "value": format!("*Target Span*\n`{}::{}`", target, span),
+                    "name": "Target Span",
+                    "value": format!("`{}::{}`", target, span),
                     "inline": true
                 },
                 {
                     "name": "Source",
-                    "value": format!("*Source*\n`{}#L{}`", source_file, source_line),
+                    "value": format!("`{}#L{}`", source_file, source_line),
                     "inline": true
                 },
             ],
