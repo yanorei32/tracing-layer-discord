@@ -300,6 +300,13 @@ impl DiscordLayer {
             tracing::Level::WARN => ":warning:",
             tracing::Level::ERROR => ":x:",
         };
+        let event_level_color = match *event_level {
+            tracing::Level::TRACE => 1752220,
+            tracing::Level::DEBUG => 1752220,
+            tracing::Level::INFO => 5763719,
+            tracing::Level::WARN => 15105570,
+            tracing::Level::ERROR => 15548997,
+        };
         let source_file = event.metadata().file().unwrap_or("Unknown");
         let source_line = event.metadata().line().unwrap_or(0);
 
@@ -348,7 +355,7 @@ impl DiscordLayer {
             "footer": {
                 "text": app_name
             },
-            "color": 16711680, // Hex value for "red"
+            "color": event_level_color, // Hex value for "red"
             "thumbnail": {
                 "url": "https://example.com/error-thumbnail.png"
             }

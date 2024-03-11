@@ -4,9 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.4] - 2023-07-20
+### Feature
+- Change embed color based on trace level
+
 ## [0.1.3] - 2023-07-20
 ### Fixed
-- Handle network failures in message delivery with retry and expotential backoff
+- Handle network failures in message delivery with retry and exponential backoff
 
 ## [0.1.2] - 2023-06-19
 ### Changed
