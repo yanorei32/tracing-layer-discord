@@ -18,7 +18,7 @@ Configure the dependencies and pull directly from GitHub:
 [dependencies]
 tokio = "1.0"
 tracing = "0.1"
-tracing-layer-discord = "0.6"
+tracing-layer-discord = "0.1"
 ```
 
 ## Examples 
@@ -37,13 +37,7 @@ This screenshots shows the first three Discord messages sent while running this 
 
 By default, messages are sent using [Discord Blocks](https://api.discord.com/block-kit). Here's an example:
 
-<img src="https://i.imgur.com/76V50Gr.png" title="hover text" alt="Screenshot demonstrating the current formatter implementation for events sent as Discord messages">
-
-##### Discord Text
-
-By disabling the default features of this crate (and therefore disabling the `blocks` feature), you can revert to the older format which does not use the block kit.
-
-<img src="https://i.imgur.com/vefquEK.png" width="450" title="hover text" alt="Screenshot demonstrating the current formatter implementation for events sent as Discord messages">
+<img src="https://i.imgur.com/4mF8vbX.png" width=350 title="hover text" alt="Screenshot demonstrating the current formatter implementation for events sent as Discord messages">
 
 #### Code example
 
