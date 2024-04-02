@@ -11,6 +11,8 @@ use crate::worker::{BackgroundWorker, WorkerMessage};
 use crate::{config::DiscordConfig, message::MessagePayload, worker::worker, ChannelSender};
 use std::collections::HashMap;
 use std::str::FromStr;
+use std::sync::Arc;
+use tokio::sync::Mutex;
 use tracing::log::LevelFilter;
 
 /// Layer for forwarding tracing events to Discord.
@@ -86,7 +88,7 @@ impl DiscordLayer {
         };
         let worker = BackgroundWorker {
             sender: tx,
-            handle: tokio::spawn(worker(rx)),
+            handle: Arc::new(Mutex::new(Some(tokio::spawn(worker(rx))))),
         };
         (layer, worker)
     }
