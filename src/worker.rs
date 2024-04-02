@@ -36,7 +36,7 @@ pub(crate) async fn worker(mut rx: ChannelReceiver) {
                             break; // Success, break out of the retry loop
                         }
                         Err(e) => {
-                            debug_println!("failed to send discord message: {}", e);
+                            println!("ERROR: failed to send discord message: {}", e);
                         }
                     };
 
@@ -79,7 +79,7 @@ impl BackgroundWorker {
         if let Some(handle) = guard.take() {
             let _ = handle.await;
         } else {
-            debug_println!("worker handle is already dropped");
+            println!("ERROR: worker handle is already dropped");
         }
     }
 }
