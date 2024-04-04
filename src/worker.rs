@@ -1,5 +1,6 @@
 use std::sync::Arc;
 use debug_print::debug_println;
+use tokio::sync::mpsc::error::SendError;
 use tokio::sync::Mutex;
 use crate::message::MessagePayload;
 use crate::{ChannelReceiver, ChannelSender};
@@ -74,7 +75,14 @@ impl BackgroundWorker {
     /// Without invoking`.teardown()`, your application may exit before all Discord messages can be
     /// sent.
     pub async fn shutdown(self) {
-        self.sender.send(WorkerMessage::Shutdown).unwrap();
+        match self.sender.send(WorkerMessage::Shutdown) {
+            Ok(..) => {
+                debug_println!("discord worker shutdown");
+            }
+            Err(e) => {
+                println!("ERROR: failed to send shutdown message to discord worker: {}", e);
+            }
+        }
         let mut guard = self.handle.lock().await;
         if let Some(handle) = guard.take() {
             let _ = handle.await;
