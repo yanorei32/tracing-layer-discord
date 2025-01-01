@@ -47,7 +47,6 @@ pub struct DiscordLayer {
     /// Filter events by their level.
     level_filter: Option<String>,
 
-    #[cfg(feature = "embed")]
     app_name: String,
 
     /// Configure the layer's connection to the Discord Webhook API.
@@ -285,7 +284,6 @@ where
 }
 
 impl DiscordLayer {
-    #[cfg(feature = "embed")]
     fn format_payload(
         app_name: &str,
         message: &str,
@@ -402,34 +400,5 @@ impl DiscordLayer {
         }
 
         PayloadMessageType::EmbedNoText(vec![discord_embed])
-    }
-
-    #[cfg(not(feature = "embed"))]
-    fn format_payload(
-        app_name: &str,
-        message: &str,
-        event: &Event,
-        target: &str,
-        span: &str,
-        metadata: String,
-    ) -> PayloadMessageType {
-        let event_level = event.metadata().level().as_str();
-        let source_file = event.metadata().file().unwrap_or("Unknown");
-        let source_line = event.metadata().line().unwrap_or(0);
-        let payload = format!(
-            concat!(
-                "*Trace from {}*\n",
-                "*Event [{}]*: \"{}\"\n",
-                "*Target*: _{}_\n",
-                "*Span*: _{}_\n",
-                "*Metadata*:\n",
-                "```",
-                "{}",
-                "```\n",
-                "*Source*: _{}#L{}_",
-            ),
-            app_name, event_level, message, span, target, metadata, source_file, source_line,
-        );
-        PayloadMessageType::TextNoEmbed(payload)
     }
 }

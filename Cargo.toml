@@ -17,8 +17,7 @@ path = "src/lib.rs"
 name = "simple"
 
 [features]
-default = ["embed", "rustls", "gzip"]
-embed = []
+default = ["rustls", "gzip"]
 gzip = ["reqwest/gzip"]
 native-tls = ["reqwest/default-tls"]
 rustls = ["reqwest/rustls-tls"]
