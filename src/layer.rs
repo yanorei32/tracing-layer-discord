@@ -3,7 +3,7 @@ use tracing::{Event, Subscriber};
 use tracing_bunyan_formatter::JsonStorage;
 use tracing_subscriber::{layer::Context, Layer};
 
-use crate::model::WorkerRequest;
+use crate::model::{TracingLevelExt, WorkerRequest};
 use crate::worker::worker;
 
 const MAX_FIELD_VALUE_LENGTH: usize = 1024;
@@ -152,32 +152,5 @@ where
         });
 
         let _ = self.message_tx.send(WorkerRequest::Post(query));
-    }
-}
-
-trait TracingLevelExt {
-    fn as_emoji(&self) -> &'static str;
-    fn as_color(&self) -> u32;
-}
-
-impl TracingLevelExt for tracing::Level {
-    fn as_emoji(&self) -> &'static str {
-        match *self {
-            tracing::Level::TRACE => ":mag:",
-            tracing::Level::DEBUG => ":bug:",
-            tracing::Level::INFO => ":information_source:",
-            tracing::Level::WARN => ":warning:",
-            tracing::Level::ERROR => ":x:",
-        }
-    }
-
-    fn as_color(&self) -> u32 {
-        match *self {
-            tracing::Level::TRACE => 0x1abc9c,
-            tracing::Level::DEBUG => 0x1abc9c,
-            tracing::Level::INFO => 0x57f287,
-            tracing::Level::WARN => 0xe67e22,
-            tracing::Level::ERROR => 0xed4245,
-        }
     }
 }
