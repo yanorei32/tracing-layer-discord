@@ -1,7 +1,6 @@
 use tracing::{info, instrument, warn};
-use tracing_subscriber::{layer::SubscriberExt, Registry};
-
 use tracing_layer_discord::DiscordLayer;
+use tracing_subscriber::{layer::SubscriberExt, Registry};
 
 #[instrument]
 pub async fn create_user(id: u64) {
@@ -23,15 +22,20 @@ pub async fn app_users_webhook(id: u64) {
 pub async fn controller() {
     info!("Orphan event without a parent span");
     app_users_webhook(2).await;
-    // tokio::join!(create_user(2), create_user(4), create_user(6));
+    tokio::join!(create_user(2), create_user(4), create_user(6));
 }
 
 #[tokio::main]
 async fn main() {
-    let (discord_layer, background_worker) =
-        DiscordLayer::builder("test-app".to_string(), Default::default()).build();
+    let (discord_layer, shutdowner) = DiscordLayer::new(
+        env!("CARGO_PKG_NAME"),
+        &std::env::var("DISCORD_WEBHOOK_URL").unwrap(),
+    );
+
     let subscriber = Registry::default().with(discord_layer);
     tracing::subscriber::set_global_default(subscriber).unwrap();
+
     controller().await;
-    background_worker.shutdown().await;
+
+    shutdowner.shutdown().await;
 }
