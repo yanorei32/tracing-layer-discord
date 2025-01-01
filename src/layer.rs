@@ -355,9 +355,6 @@ impl DiscordLayer {
                 "text": app_name
             },
             "color": event_level_color,
-            "thumbnail": {
-                "url": "https://example.com/error-thumbnail.png"
-            }
         });
 
         // Check if metadata exceeds the limit
