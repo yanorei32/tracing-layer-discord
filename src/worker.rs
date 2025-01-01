@@ -15,17 +15,17 @@ pub(crate) async fn worker(mut rx: ChannelReceiver) {
     while let Some(message) = rx.recv().await {
         match message {
             WorkerMessage::Data(payload) => {
-                let webhook_url = payload.webhook_url().to_string();
-                let payload = serde_json::to_string(&payload)
+                let payload_str = serde_json::to_string(&payload)
                     .expect("failed to deserialize discord payload, this is a bug");
-                debug_println!("sending discord message: {}", payload);
+
+                debug_println!("sending discord message: {}", payload_str);
 
                 let mut retries = 0;
                 while retries < MAX_RETRIES {
                     match client
-                        .post(webhook_url.clone())
+                        .post(payload.webhook_url())
                         .header("Content-Type", "application/json")
-                        .body(payload.clone())
+                        .body(payload_str.clone())
                         .send()
                         .await
                     {
@@ -41,8 +41,7 @@ pub(crate) async fn worker(mut rx: ChannelReceiver) {
                     };
 
                     // Exponential backoff - increase the delay between retries
-                    let delay_ms = 2u64.pow(retries as u32) * 100;
-                    tokio::time::sleep(std::time::Duration::from_millis(delay_ms)).await;
+                    tokio::time::sleep(std::time::Duration::from_millis(100)).await;
                     retries += 1;
                 }
             }
