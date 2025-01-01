@@ -15,7 +15,7 @@ const MAX_RETRIES: usize = 10;
 pub(crate) async fn worker(
     webhook_url: &str,
     mut rx: mpsc::UnboundedReceiver<WorkerRequest>,
-    shutdown_tx: oneshot::Sender<()>,
+    shutdowned_tx: oneshot::Sender<()>,
 ) {
     let client = reqwest::Client::new();
     while let Some(message) = rx.recv().await {
@@ -51,5 +51,5 @@ pub(crate) async fn worker(
         }
     }
 
-    let _ = shutdown_tx.send(());
+    let _ = shutdowned_tx.send(());
 }
