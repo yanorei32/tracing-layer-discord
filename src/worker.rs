@@ -2,7 +2,6 @@ use crate::message::MessagePayload;
 use crate::{ChannelReceiver, ChannelSender};
 use debug_print::debug_println;
 use std::sync::Arc;
-use tokio::sync::mpsc::error::SendError;
 use tokio::sync::Mutex;
 use tokio::task::JoinHandle;
 

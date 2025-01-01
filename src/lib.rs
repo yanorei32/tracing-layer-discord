@@ -1,6 +1,5 @@
 #![doc = include_str!("../README.md")]
 pub use config::DiscordConfig;
-pub use filters::EventFilters;
 pub use layer::DiscordLayer;
 pub use layer::DiscordLayerBuilder;
 pub use worker::BackgroundWorker;
@@ -8,7 +7,6 @@ pub use worker::BackgroundWorker;
 use crate::worker::WorkerMessage;
 
 mod config;
-mod filters;
 mod layer;
 mod message;
 mod worker;

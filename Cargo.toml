@@ -31,4 +31,3 @@ reqwest = { version = "0.12", default-features = false }
 tracing = { version = "0.1", features = ["log"] }
 tracing-subscriber = "0.3"
 tracing-bunyan-formatter = { default-features = false, version = "0.3" }
-regex = "1"
