@@ -74,9 +74,10 @@ where
 
         let values = event_record.values();
 
-        let heading = if let Some(message) = values.get("message").map(|v| v.as_str()).flatten() {
+        #[allow(clippy::manual_unwrap_or)]
+        let heading = if let Some(message) = values.get("message").and_then(|v| v.as_str()) {
             message
-        } else if let Some(error) = values.get("error").map(|v| v.as_str()).flatten() {
+        } else if let Some(error) = values.get("error").and_then(|v| v.as_str()) {
             error
         } else {
             "No message"
@@ -97,12 +98,18 @@ where
         let mut fields = vec![
             serde_json::json!({
                 "name": "Target Span",
-                "value": format!("`{}`", truncate(&format!("{}::{}", event.metadata().target(), span_name), MAX_FIELD_VALUE_LENGTH - 2)),
+                "value": format!("`{}`", truncate(
+                    &format!("{}::{}", event.metadata().target(), span_name),
+                    MAX_FIELD_VALUE_LENGTH - 2,
+                )),
                 "inline": true,
             }),
             serde_json::json!({
                 "name": "Source",
-                "value": format!("`{}`", truncate(&format!("`{}#L{}`", src_file, src_line), MAX_FIELD_VALUE_LENGTH - 2)),
+                "value": format!("`{}`", truncate(
+                    &format!("`{}#L{}`", src_file, src_line),
+                    MAX_FIELD_VALUE_LENGTH - 2
+                )),
                 "inline": true,
             }),
         ];
@@ -110,7 +117,10 @@ where
         for (key, value) in values {
             fields.push(serde_json::json!({
                 "name": format!("Meta/{}", key),
-                "value": format!("`{}`", truncate(&value.to_string(), MAX_FIELD_VALUE_LENGTH - 2)),
+                "value": format!("`{}`", truncate(
+                    &value.to_string(),
+                    MAX_FIELD_VALUE_LENGTH - 2
+                )),
                 "inline": true,
             }));
         }
@@ -121,7 +131,10 @@ where
                 for (key, value) in visitor.values() {
                     fields.push(serde_json::json!({
                         "name": format!("SpanExt/{}", key),
-                        "value": format!("`{}`", truncate(&value.to_string(), MAX_FIELD_VALUE_LENGTH - 2)),
+                        "value": format!("`{}`", truncate(
+                            &value.to_string(),
+                            MAX_FIELD_VALUE_LENGTH - 2
+                        )),
                         "inline": true,
                     }));
                 }
