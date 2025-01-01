@@ -1,7 +1,4 @@
 # tracing-layer-discord
-[![Docs](https://docs.rs/tracing-layer-discord/badge.svg)](https://docs.rs/tracing-layer-discord)
-[![Crates.io](https://img.shields.io/crates/v/tracing-layer-discord.svg?maxAge=2592000)](https://crates.io/crates/tracing-layer-discord)
-
 `tracing-layer-discord` provides a [`Layer`] implementation for sending [`tracing`] events to Discord. 
 
 ## Synopsis
