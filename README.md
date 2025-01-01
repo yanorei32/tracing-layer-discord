@@ -40,7 +40,7 @@ By default, messages are sent using [Discord Blocks](https://api.discord.com/blo
 
 Run this example locally using the following commands:
 ```shell
-$ git clone https://github.com/seanpianka/tracing-layer-discord.git
+$ git clone https://github.com/yanorei32/tracing-layer-discord.git
 $ cd tracing-layer-discord
 $ cargo run --example simple
 ```
