@@ -1,11 +1,10 @@
 [package]
 name = "tracing-layer-discord"
-version = "0.1.7"
+version = "0.0.1"
 edition = "2018"
 license = "Apache-2.0"
 description = "Send filtered tracing events to Discord"
-documentation = "https://docs.rs/tracing-layer-discord"
-repository = "https://github.com/seanpianka/tracing-layer-discord/"
+repository = "https://github.com/yanorei32/tracing-layer-discord/"
 readme = "README.md"
 keywords = ["tracing", "layer", "discord", "async", "filter"]
 categories = ["development-tools::debugging", "asynchronous"]
@@ -20,9 +19,9 @@ name = "simple"
 [features]
 default = ["embed", "rustls", "gzip"]
 embed = []
-gzip = [ "reqwest/gzip" ]
-native-tls = [ "reqwest/default-tls" ]
-rustls = [ "reqwest/rustls-tls" ]
+gzip = ["reqwest/gzip"]
+native-tls = ["reqwest/default-tls"]
+rustls = ["reqwest/rustls-tls"]
 
 [dependencies]
 debug_print = "1"
