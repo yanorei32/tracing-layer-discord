@@ -58,7 +58,10 @@ impl From<Regex> for EventFilters {
 /// Interpret and convert a pair of regex as a single positive filter and a single negative filter.
 impl From<(Option<Regex>, Option<Regex>)> for EventFilters {
     fn from((single_positive, single_negative): (Option<Regex>, Option<Regex>)) -> Self {
-        Self::new(single_positive.map(|sp| vec![sp]), single_negative.map(|sn| vec![sn]))
+        Self::new(
+            single_positive.map(|sp| vec![sp]),
+            single_negative.map(|sn| vec![sn]),
+        )
     }
 }
 

@@ -2,7 +2,7 @@ use regex::Regex;
 use tracing::{info, instrument};
 use tracing_subscriber::{layer::SubscriberExt, Registry};
 
-use tracing_layer_discord::{EventFilters, DiscordLayer};
+use tracing_layer_discord::{DiscordLayer, EventFilters};
 
 #[instrument]
 pub async fn handler() {
@@ -16,15 +16,17 @@ pub async fn handler() {
 
 #[tokio::main]
 async fn main() {
-    let targets_to_filter: EventFilters = Regex::new("exclude_fields_from_messages").unwrap().into();
+    let targets_to_filter: EventFilters =
+        Regex::new("exclude_fields_from_messages").unwrap().into();
     let fields_to_exclude = vec![
         Regex::new(".*token.*").unwrap(),
         Regex::new(".*password.*").unwrap(),
         Regex::new("command").unwrap(),
     ];
-    let (discord_layer, background_worker) = DiscordLayer::builder("test-app".to_string(), targets_to_filter)
-        .field_exclusion_filters(fields_to_exclude)
-        .build();
+    let (discord_layer, background_worker) =
+        DiscordLayer::builder("test-app".to_string(), targets_to_filter)
+            .field_exclusion_filters(fields_to_exclude)
+            .build();
     let subscriber = Registry::default().with(discord_layer);
     tracing::subscriber::set_global_default(subscriber).unwrap();
     handler().await;

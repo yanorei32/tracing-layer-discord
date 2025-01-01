@@ -1,9 +1,9 @@
-use std::sync::Arc;
-use debug_print::debug_println;
-use tokio::sync::mpsc::error::SendError;
-use tokio::sync::Mutex;
 use crate::message::MessagePayload;
 use crate::{ChannelReceiver, ChannelSender};
+use debug_print::debug_println;
+use std::sync::Arc;
+use tokio::sync::mpsc::error::SendError;
+use tokio::sync::Mutex;
 use tokio::task::JoinHandle;
 
 /// Maximum number of retries for failed requests
@@ -17,8 +17,8 @@ pub(crate) async fn worker(mut rx: ChannelReceiver) {
         match message {
             WorkerMessage::Data(payload) => {
                 let webhook_url = payload.webhook_url().to_string();
-                let payload =
-                    serde_json::to_string(&payload).expect("failed to deserialize discord payload, this is a bug");
+                let payload = serde_json::to_string(&payload)
+                    .expect("failed to deserialize discord payload, this is a bug");
                 debug_println!("sending discord message: {}", payload);
 
                 let mut retries = 0;
@@ -80,7 +80,10 @@ impl BackgroundWorker {
                 debug_println!("discord worker shutdown");
             }
             Err(e) => {
-                println!("ERROR: failed to send shutdown message to discord worker: {}", e);
+                println!(
+                    "ERROR: failed to send shutdown message to discord worker: {}",
+                    e
+                );
             }
         }
         let mut guard = self.handle.lock().await;

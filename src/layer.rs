@@ -221,8 +221,8 @@ where
                     LevelFilter::from_str(event.metadata().level().as_str())
                         .map_err(|e| FilterError::IoError(Box::new(e)))?
                 };
-                let level_threshold =
-                    LevelFilter::from_str(level_filters).map_err(|e| FilterError::IoError(Box::new(e)))?;
+                let level_threshold = LevelFilter::from_str(level_filters)
+                    .map_err(|e| FilterError::IoError(Box::new(e)))?;
                 if message_level > level_threshold {
                     return Err(FilterError::PositiveFilterFailed);
                 }
@@ -321,8 +321,7 @@ impl DiscordLayer {
         if message.chars().count() > MAX_ERROR_MESSAGE_CHARS {
             println!(
                 "Truncating message to {} characters, original: {}",
-                MAX_ERROR_MESSAGE_CHARS,
-                message
+                MAX_ERROR_MESSAGE_CHARS, message
             );
             let mut char_count = 0;
             for c in message.chars() {
@@ -366,11 +365,14 @@ impl DiscordLayer {
         // Check if metadata exceeds the limit
         if metadata.len() <= MAX_FIELD_VALUE_CHARS {
             // Metadata fits within a single field
-            discord_embed["fields"].as_array_mut().unwrap().push(serde_json::json!({
-                "name": "Metadata",
-                "value": format!("```json\n{}\n```", metadata),
-                "inline": false
-            }));
+            discord_embed["fields"]
+                .as_array_mut()
+                .unwrap()
+                .push(serde_json::json!({
+                    "name": "Metadata",
+                    "value": format!("```json\n{}\n```", metadata),
+                    "inline": false
+                }));
         } else {
             // Metadata exceeds the limit, split into multiple fields
             let mut remaining_metadata = metadata;
@@ -381,13 +383,19 @@ impl DiscordLayer {
                     .take(MAX_FIELD_VALUE_CHARS)
                     .collect::<String>();
 
-                remaining_metadata = remaining_metadata.chars().skip(MAX_FIELD_VALUE_CHARS).collect();
+                remaining_metadata = remaining_metadata
+                    .chars()
+                    .skip(MAX_FIELD_VALUE_CHARS)
+                    .collect();
 
-                discord_embed["fields"].as_array_mut().unwrap().push(serde_json::json!({
-                    "name": format!("Metadata ({})", chunk_number),
-                    "value": format!("```json\n{}\n```", chunk),
-                    "inline": false
-                }));
+                discord_embed["fields"]
+                    .as_array_mut()
+                    .unwrap()
+                    .push(serde_json::json!({
+                        "name": format!("Metadata ({})", chunk_number),
+                        "value": format!("```json\n{}\n```", chunk),
+                        "inline": false
+                    }));
 
                 chunk_number += 1;
             }

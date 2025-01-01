@@ -28,7 +28,8 @@ pub async fn controller() {
 
 #[tokio::main]
 async fn main() {
-    let (discord_layer, background_worker) = DiscordLayer::builder("test-app".to_string(), Default::default()).build();
+    let (discord_layer, background_worker) =
+        DiscordLayer::builder("test-app".to_string(), Default::default()).build();
     let subscriber = Registry::default().with(discord_layer);
     tracing::subscriber::set_global_default(subscriber).unwrap();
     controller().await;
